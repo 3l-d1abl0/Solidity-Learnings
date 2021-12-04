@@ -12,5 +12,5 @@ contract SampleContract {
 
     function func2() public pure returns (string){
         return "public pure return ";
-    };
+    }
 }
