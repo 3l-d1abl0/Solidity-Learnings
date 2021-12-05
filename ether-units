@@ -1,0 +1,14 @@
+# Ether Units
+
+1 ether = 1000 finney
+1 ether = 1,000,000 szabo
+1 ether = 1,000,000,000,000,000,000 wei
+
+1 finney = 0.001 ether
+1 finney = 1000 szabo
+1 finney = 1,000,000,000,000,000 wei
+
+1 szabo = 0.000001 ether
+1 szabo = 0.001 finney
+1 szabo = 1,000,000,000,000 wei
+
