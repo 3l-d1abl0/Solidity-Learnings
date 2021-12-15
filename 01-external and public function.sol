@@ -20,9 +20,10 @@ contract SampleContract {
 
      3. internal - Accessible only from this contract and contracts inheriting from it.
      Internal is the default visibility for state variables.
-     
+
+
      4. external - Cannot be accessed internally, only externally and transactions
-     Recommended to reduce gas. Access internally with this.f.
+     Recommended to reduce gas. Access internally with this.func
      Arguments of external functions can be directly read from the calldata.
      They don't need to be copied over to memory like for public functions.
      Can't be used for variables

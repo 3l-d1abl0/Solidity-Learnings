@@ -1,16 +1,13 @@
 pragma solidity ^0.8.0;
 
-contract MessageContract{
-
+contract MessageContract {
     string private message = "Hello World";
 
-
-    function getMessage() public returns (string memory){
+    function getMessage() public view returns (string memory) {
         return message;
     }
 
-    function setMessage(string memory newMessage) public{
+    function setMessage(string memory newMessage) public {
         message = newMessage;
     }
-
 }

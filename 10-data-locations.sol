@@ -3,35 +3,47 @@
 pragma solidity ^0.8.0;
 
 /**
-So currently, reference types comprise structs, arrays and mappings. If you use a reference type, you always have to explicitly provide the data area where the type is stored:
 
-memory (whose lifetime is limited to a function call)
-storage (the location where the state variables are stored)
+Variables are declared as either storage, memory or calldata to explicitly specify the location of the data.
 
-calldata (special data location that contains the function arguments, only available for external function call parameters).
+storage - variable is a state variable (store on blockchain)
+memory - variable is in memory and it exists while a function is being called
+         lifetime is limited to a function call
+calldata - special data location that contains function arguments, only available for external functions
+
+
+
+So currently, reference types comprise structs, arrays and mappings.
+If you use a reference type, you always have to explicitly provide the data area where the type is stored.
+
+ 
  */
 
-contract ChangeArrayValue{
-
+contract ChangeArrayValue {
     //storage by default
-    uint[20] public arr;
+    uint256[20] public arr;
 
-
-    function startChange() public {
-
+    function startfirstChange() public {
         firstChange(arr);
-        secondChange(arr);
+        test(arr);
+    }
 
+    function startsecondChange() public view {
+        secondChange(arr);
+        test(arr);
     }
 
     //Can be transformed to storage
-    function firstChange(uint[20] storage x) internal{
-        x[0] = 4;
+    function firstChange(uint256[20] storage x) internal {
+        x[5] = 4;
     }
 
-    //memory 
-    function secondChange(uint[20] memory x) internal pure{
-        x[0] = 3;
+    //memory
+    function secondChange(uint256[20] memory x) internal pure {
+        x[5] = 3;
     }
 
+    function test(uint256[20] memory x) public pure returns (uint256) {
+        return x[0];
+    }
 }
