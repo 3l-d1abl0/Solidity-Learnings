@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 Require - Reverts if the condition is not met:
     - validate response from an external contract
     - validate state condition prior to executing state changing operation
-    - used towars teh beginning of the function
+    - used towards the beginning of the function
  */
 contract Bank {
     mapping(address => uint256) public accounts;
