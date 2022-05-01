@@ -44,6 +44,6 @@ contract SampleContract {
 
     function test3(uint256[20] memory a) public view {
         this.test2(a);
-        //external function can only be called internally using 'this'
+        //external function can be called internally only by using 'this'
     }
 }
