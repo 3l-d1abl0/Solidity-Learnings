@@ -7,7 +7,7 @@ contract VariableExamples {
     bool public switchedOn = true;
 
     //address  //default 0x0000000000000000000000000000000000000000
-    address public addr = 0xCA35E2c915458EF540aDe6068dFe2F38E8fa333a;
+    address public addr = 0xCA35E2c915458eF540ADE6068DFE2F38E8FA333a;
     address public owner = msg.sender;
 
     //unsigned integer //positive values
