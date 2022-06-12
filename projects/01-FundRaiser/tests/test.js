@@ -12,6 +12,8 @@ console.log(bytecode);*/
 let fetchedAccounts;
 let fundRaiser;
 
+let fundraiserGoalAmount = 100000000000;
+
 
 /*
 beforeEach(async () => {
@@ -58,53 +60,59 @@ describe('FundRaiser', () => {
             })
             .send({ from: fetchedAccounts[0], gas: '1000000' });
 
-        //console.log(fundRaiser);
+        
     });
 
     it('Contract address Check', () => {
+        console.log('Contract Address: ', fundRaiser.options.address);
         assert.ok(fundRaiser.options.address);
-        console.log(fundRaiser.options.address);
-    });
-
-    /*it('Deadline Check', async () => {
-        const deadline = await fundRaiser.methods.deadline().call();
-        console.log('deadline : ', deadline);
-        assert.equal(deadline, "40320");
-    });*/
-
-    it('Contract Admin', async () => {
-        const admin = await fundRaiser.methods.admin().call();
-        console.log('Admin: ', admin);
-        assert.ok(admin);
-    });
-
-    it('Goal Amount Check', async () => {
-        const amount = await fundRaiser.methods.goalAmount().call();
-        console.log('Amount: ', amount);
-        assert.equal(amount, 100000000000);
     });
 
     /*
-        it('Check initial Contributions', () => {
-    
-            let idx = 0;
-            fetchedAccounts.forEach(async address => {
-    
-                const contributions = await fundRaiser.methods.contributions(address).call();
-                console.log(`${idx} = ${address} => ${contributions} ETH`);
-                idx++;
-    
-            });
-    
-            assert.ok(1);
-        });
+    it('Deadline Check', async () => {
+        const deadline = await fundRaiser.methods.deadline().call();
+        console.log('deadline : ', deadline);
+        assert.equal(deadline, "40320");
+    });
     */
 
+    it('Contract Admin Check', async () => {
+        const admin = await fundRaiser.methods.admin().call();
+        console.log('Contract Admin: ', admin);
+        assert.ok(admin);
+    });
 
-    it('Contribute', async () => {
+    it('Fundraiser Amount Check', async () => {
+        const amount = await fundRaiser.methods.goalAmount().call();
+        console.log('Fundraiser Target Amount: ', amount);
+        assert.equal(amount, fundraiserGoalAmount);
+    });
 
-        let idx = 0;
-        fetchedAccounts.forEach(async address => {
+    
+    it('Check initial Contributions', async () => {
+
+        let idx = 0, totalContributions = 0;
+        for (const address of fetchedAccounts) {
+
+            const contributions = await fundRaiser.methods.contributions(address).call();
+            totalContributions +=contributions;
+            //console.log(`${idx} = ${address} => ${contributions} ETH`);
+            idx++;
+
+        }
+
+        assert.equal(totalContributions, 0);
+    });
+    
+
+
+    it('Contribution Check', async () => {
+
+        let idx = 0, totalContributions = 0;
+
+        //forEach doesnt work with async/await
+        //await fetchedAccounts.forEach(async address => {
+        for (const address of fetchedAccounts) {
 
             const contribute = await fundRaiser.methods.contribute().send({
                 from: address,
@@ -112,19 +120,57 @@ describe('FundRaiser', () => {
             });
 
             const contributed = await fundRaiser.methods.contributions(address).call();
-            //assert.equal(contributions, '2000000000000000000');
-            console.log(`Sent.. ${address}  => 2000000000000000000`);
+
+            totalContributions += Number('2000000000000000000');
 
             let bal = web3.utils.fromWei(await web3.eth.getBalance(address), 'ether');
-            console.log(`${idx} = ${address} => ${bal} ETH`);
+            //console.log(`${idx} = ${address} => ${bal} ETH`);
             idx++;
 
-            //assert.equal(contributed, '2000000000000000000');
+        }
 
-        });
-
-        //assert.ok(1);
+        const raisedAmount = await fundRaiser.methods.raisedAmount().call();
+        
+        //console.log('totalContibutions: ', totalContributions);
+        console.log('raisedAmount: ', raisedAmount);
+        assert.equal(raisedAmount, totalContributions);
     });
 
+
+    it('Create Spending Request', async() =>{
+        //createSpendingRequest
+        try {
+        
+            let contributed = await fundRaiser.methods
+            .createSpendingRequest( "First Spending Request", fetchedAccounts[1], '200000000000000000')
+            .send({
+                from: fetchedAccounts[0],
+                gas: '1000000'
+            });
+
+            contributed = await fundRaiser.methods
+            .createSpendingRequest( "Second Spending Request", fetchedAccounts[2], '200000000000000000')
+            .send({
+                from: fetchedAccounts[0],
+                gas: '1000000'
+            });
+        
+        } catch (err) {
+            console.log('err',err);
+            assert(false);
+        }
+
+        //get Last Spending Request
+        const requestLength = await fundRaiser.methods.numRequests().call();
+        const lastRequest = await fundRaiser.methods.requests(requestLength-1).call();
+        
+        //console.log('Request: ',lastRequest);
+
+        //Check for the lastest Spending request
+        assert.equal(lastRequest.description,"Second Spending Request");
+        assert.equal(lastRequest.requestAmount,'200000000000000000');
+        assert.equal(lastRequest.recipient,fetchedAccounts[2]);
+
+    });
 
 });
