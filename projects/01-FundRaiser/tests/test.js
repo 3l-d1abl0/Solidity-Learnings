@@ -173,4 +173,26 @@ describe('FundRaiser', () => {
 
     });
 
+
+    it('Vote Spending Request', async() =>{
+
+        let spendingRequestIndex = 0;
+        let voters =0;
+        for(let idx=0; idx<10; idx+=2){
+
+            let contributed = await fundRaiser.methods
+            .voteSpendingRequest(spendingRequestIndex)
+            .send({
+                from: fetchedAccounts[idx],
+                gas: '1000000'
+            });
+
+            voters++;
+        }
+
+        const request = await fundRaiser.methods.requests(spendingRequestIndex).call();
+        console.log('Request: ', request);
+        assert.equal(request.votesCount, voters);
+    });
+
 });
