@@ -131,7 +131,8 @@ contract FundRaising {
         );
 
         //More than 50% of the contibutors
-        require(spendingRequest.votesCount > totalContributors / 2);
+        require(spendingRequest.votesCount > totalContributors / 2,
+        "Need 50% votes in order to make Payment");
 
         payable(spendingRequest.recipient).transfer(
             spendingRequest.requestAmount
