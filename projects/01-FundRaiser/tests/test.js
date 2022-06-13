@@ -194,4 +194,35 @@ describe('FundRaiser', () => {
     });
 
 
+    it('Make payment to reciepient', async()=>{
+
+        let spendingRequestIndex =1;
+        //Making payment to the spending request with <50% votes
+        try{
+
+            let makePayment = await fundRaiser.methods
+            .makePayment( spendingRequestIndex)
+            .send({
+                from: fetchedAccounts[0],
+                gas: '1000000'
+            });
+
+        }catch(err){
+            assert(err);
+        }
+
+        spendingRequestIndex =0;
+        //Making payment to the spending request with >50% votes
+        let makePayment = await fundRaiser.methods
+            .makePayment( spendingRequestIndex)
+            .send({
+                from: fetchedAccounts[0],
+                gas: '1000000'
+            });
+
+        //Fetch the given Request
+        const request = await fundRaiser.methods.requests(spendingRequestIndex).call();
+        assert.equal(request.complete, true);
+
+    });
 });
