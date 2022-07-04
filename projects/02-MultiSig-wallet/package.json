@@ -1,0 +1,18 @@
+{
+  "name": "02-MultiSig-wallet",
+  "version": "1.0.0",
+  "description": "A Wallet where spending ethers need sto approvved by multiple Addresses. Some addresses need to be approver who have the duty to approve transactions inorder to transfer ethers. Basically, need to check if quorum is met before any transaction.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/test-helpers": "^0.5.15"
+  }
+}

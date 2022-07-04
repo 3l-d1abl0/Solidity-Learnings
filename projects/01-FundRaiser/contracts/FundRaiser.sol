@@ -61,7 +61,7 @@ contract FundRaising {
 
     //To contain the list of Requests
     Request[] public requests;
-    uint256 numRequests = 0;
+    uint256 public numRequests = 0;
 
     //Request to create a Spending Request
     function createSpendingRequest(
@@ -72,7 +72,10 @@ contract FundRaising {
         require(admin == msg.sender, "only admin can request");
         require(_value > 0, "spending amount cannot be 0");
 
-        /*Request memory newRequest = Request({
+        /*
+        Struct containing a (nested) mapping cannot be constructed
+
+        Request memory newRequest = Request({
             requestAmount: _value,
             description: _description,
             recipient: _recipient,
@@ -80,17 +83,24 @@ contract FundRaising {
             votesCount: 0
         });
 
-        requests.push(newRequest);*/
+        requests.push(newRequest);
 
-        Request storage r = requests[numRequests];
+        */
+        
+        Request storage r = requests.push();
+       // Request storage r = requests[numRequests];
         numRequests++;
         r.requestAmount = _value;
         r.description = _description;
         r.recipient = _recipient;
         r.complete = false;
         r.votesCount = 0;
+        
     }
 
+    /**
+        Handles the functionality when people try to vote for Spending Request
+     */
     function voteSpendingRequest(uint256 index) public {
         require(
             index >= 0 && index < requests.length,
@@ -110,6 +120,9 @@ contract FundRaising {
         spendingRequest.votesCount++;
     }
 
+    /**Function to make the payment to the recepient
+        If 50% of the contributers vote
+     */
     function makePayment(uint256 index) public onlyAdmin {
         Request storage spendingRequest = requests[index];
         require(
@@ -118,7 +131,8 @@ contract FundRaising {
         );
 
         //More than 50% of the contibutors
-        require(spendingRequest.votesCount > totalContributors / 2);
+        require(spendingRequest.votesCount > totalContributors / 2,
+        "Need 50% votes in order to make Payment");
 
         payable(spendingRequest.recipient).transfer(
             spendingRequest.requestAmount
