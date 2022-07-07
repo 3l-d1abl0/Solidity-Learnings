@@ -124,4 +124,27 @@ contract("TruffleContract", (accounts) => {
   });
     
 
+  it("should not transfer due to low Balance (transferFrom)", async ()=>{
+
+    //Approve allowance of 500
+    let allowance = 500;
+    
+    //accountA allowing owner to be spender on its behalf
+    receipt = await erc20.approve(owner_address, allowance, { from: accountA });
+    expectEvent(receipt, "Approval", {
+      tokenOwner: accountA,
+      spender: owner_address,
+      tokens: web3.utils.toBN(allowance),
+    });
+
+    //Transfer token A to B by owner
+    let transferAtoB = 500;
+    //Expect a revert - since accoutnA doesn't have that much in balance
+    await expectRevert(
+      erc20.transferFrom(accountA, accountB, transferAtoB),
+      "token balance too low",
+    );
+
+  });
+
 });
