@@ -147,4 +147,15 @@ contract("TruffleContract", (accounts) => {
 
   });
 
+
+  it("should not transfer due to low Balance (transfer)", async ()=>{
+
+    AtoB = 6000;
+    await expectRevert(
+      erc20.transfer(accountB, AtoB, { from: accountA }),
+      "insufficient balance",
+    );
+    
+  });
+
 });
